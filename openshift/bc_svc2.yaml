@@ -1,19 +1,19 @@
-apiVersion: build.openshift.io/v1
 kind: BuildConfig
+apiVersion: build.openshift.io/v1
 metadata:
-  name: golang-sample-main
+  name: golang-sample-svc2
   labels:
-    app: golang-sample-main
-    app.kubernetes.io/component: golang-sample-main
-    app.kubernetes.io/instance: golang-sample-main
-    app.kubernetes.io/name: golang-sample-main
+    app: golang-sample-svc2
+    app.kubernetes.io/component: golang-sample-svc2
+    app.kubernetes.io/instance: golang-sample-svc2
+    app.kubernetes.io/name: golang-sample-svc2
     app.kubernetes.io/part-of: golang-sample
 spec:
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: 'golang-sample-main:latest'
+      name: 'golang-sample-svc2:latest'
   resources: {}
   successfulBuildsHistoryLimit: 1
   failedBuildsHistoryLimit: 1
@@ -29,7 +29,7 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/avoigtma/golang-example.git'
-    contextDir: src/main  
+    contextDir: src/svc2  
   triggers:
     - type: ImageChange
       imageChange: {}

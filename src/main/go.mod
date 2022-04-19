@@ -1,3 +1,3 @@
-module github.com/sclorg/golang-ex
+module github.com/avoigtma/golang-example
 
-go 1.11
+go 1.14

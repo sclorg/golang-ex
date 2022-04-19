@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: golang-sample-main
+  name: golang-sample-svc1
   labels:
-    app: golang-sample-main
-    app.kubernetes.io/component: golang-sample-main
-    app.kubernetes.io/instance: golang-sample-main
-    app.kubernetes.io/name: golang-sample-main
+    app: golang-sample-svc1
+    app.kubernetes.io/component: golang-sample-svc1
+    app.kubernetes.io/instance: golang-sample-svc1
+    app.kubernetes.io/name: golang-sample-svc1
     app.kubernetes.io/part-of: golang-sample
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: golang-sample-main
+      app: golang-sample-svc1
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: golang-sample-main
-        deploymentconfig: golang-sample-main
+        app: golang-sample-svc1
+        deploymentconfig: golang-sample-svc1
     spec:
       containers:
-        - name: golang-sample-main
-          image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-main
+        - name: golang-sample-svc1
+          image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-svc1
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File

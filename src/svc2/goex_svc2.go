@@ -28,7 +28,7 @@ func randomOutput() string {
 
 	var sb strings.Builder
 
-	log.Default().Printf("Creating output %d iterations.", iterations)
+	log.Printf("Creating output %d iterations.", iterations)
 
 	for i := 1; i < randLength; i++ {
 		minSleep := 1
