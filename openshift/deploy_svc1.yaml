@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: golang-sample-svc1
+  annotations:
+      image.openshift.io/triggers: >-
+        [{"from":{"kind":"ImageStreamTag","name":"golang-sample-svc1:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"golang-sample-svc1\")].image"}]
   labels:
     app: golang-sample-svc1
     app.kubernetes.io/component: golang-sample-svc1
