@@ -37,7 +37,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	response += "\n\n\n"
 	if len(responseEnv) == 0 {
 		log.Println("No response value in env configured")
-		response += "No response value in env configured"
+		response += "No response value in env configured\n"
 	} else {
 		log.Print("Response value in env: ")
 		log.Println(responseEnv)
@@ -49,7 +49,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	/// service 1
 	if len(svc1url) == 0 {
 		log.Println("No service-1 url in env configured")
-		response += "No service-1 url in env configured"
+		response += "No service-1 url in env configured\n"
 	} else {
 		log.Print("Calling service on URL: ")
 		log.Println(svc1url)
@@ -61,7 +61,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	/// service 2
 	if len(svc2url) == 0 {
 		log.Println("No service-2 url in env configured")
-		response += "No service-2 url in env configured"
+		response += "No service-2 url in env configured\n"
 	} else {
 		log.Print("Calling service on URL: ")
 		log.Println(svc2url)
