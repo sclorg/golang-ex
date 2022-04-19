@@ -1,0 +1,36 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: golang-sample-main
+  labels:
+    app: golang-sample-main
+    app.kubernetes.io/component: golang-sample-main
+    app.kubernetes.io/instance: golang-sample-main
+    app.kubernetes.io/name: golang-sample-main
+    app.kubernetes.io/part-of: golang-sample-main
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'golang-sample-main:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 1
+  failedBuildsHistoryLimit: 1
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'golang:1.14.7-ubi8'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/sclorg/golang-ex.git'
+  triggers:
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+  runPolicy: Serial
