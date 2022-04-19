@@ -28,12 +28,14 @@ func readURL(url string) string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Servicing request.")
+
 	responseEnv := os.Getenv("RESPONSE")
 	svc1url := os.Getenv("SERVICE1_URL")
 	svc2url := os.Getenv("SERVICE2_URL")
 	response := "Hello Caller!"
 	response += "\n\n\n"
-	if len(response) == 0 {
+	if len(responseEnv) == 0 {
 		log.Println("No response value in env configured")
 		response += "No response value in env configured"
 	} else {
@@ -41,9 +43,10 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(responseEnv)
 		response += responseEnv
 		response += "'"
-		response += readURL("https://www.google.de")
+		response += "\n\n\n"
 	}
-	response += "\n\n\n"
+
+	/// service 1
 	if len(svc1url) == 0 {
 		log.Println("No service-1 url in env configured")
 	} else {
@@ -51,23 +54,24 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(svc1url)
 		response += "Result from Service-1:\n"
 		response += readURL(svc1url)
+		response += "\n\n\n"
 	}
-	response += "\n\n\n"
+
+	/// service 2
 	if len(svc2url) == 0 {
 		log.Println("No service-2 url in env configured")
 	} else {
-		log.print("Calling service on URL: ")
+		log.Print("Calling service on URL: ")
 		log.Println(svc2url)
 		response += "Result from Service-2:\n"
 		response += readURL(svc2url)
 	}
 
 	fmt.Fprintln(w, response)
-	log.Println("Servicing request.")
 }
 
 func listenAndServe(port string) {
-	fmt.Printf("serving on %s\n", port)
+	log.Printf("serving on %s\n", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
