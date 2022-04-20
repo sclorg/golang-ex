@@ -23,7 +23,7 @@ spec:
       from:
         kind: ImageStreamTag
         namespace: openshift
-        name: 'golang:1.14.7-ubi8'
+        name: 'go-toolset:1.16'
   postCommit: {}
   source:
     type: Git
