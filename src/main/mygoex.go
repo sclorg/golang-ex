@@ -133,6 +133,7 @@ func listenAndServe(port string) {
 }
 
 func main() {
+	initTracer()
 	http.HandleFunc("/", MainServiceHandler)
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
