@@ -20,18 +20,14 @@ func randomOutput() string {
 
 	rand.Seed(time.Now().UnixNano())
 
-	iterations := rand.Intn(maxIterations)
+	iterations := rand.Intn(maxIterations) + 1
 
 	var sb strings.Builder
 
 	log.Printf("Creating output %d iterations.", iterations)
 
 	for i := 1; i < iterations; i++ {
-		minSleep := 1
-		maxSleep := 5
-		randSleep := rand.Intn(maxSleep-minSleep+1) + minSleep
-		log.Printf("Iteration %d: Sleeping %d seconds, then adding next string fragment to output\n", i, randSleep)
-		time.Sleep(time.Duration(randSleep) * time.Second)
+		time.Sleep(time.Second)
 
 		sb.WriteString("- ")
 		sb.WriteString(strconv.Itoa(i))

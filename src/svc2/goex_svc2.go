@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -59,7 +60,9 @@ func randomOutput(url string) string {
 		} else {
 			log.Print("Calling service on URL: ")
 			log.Println(url)
-			sb.WriteString("Result from Service-3:\n")
+			sb.WriteString("Result from Service-3, iteration")
+			sb.WriteString(strconv.Itoa(i))
+			sb.WriteString(":\n")
 			sb.WriteString(readURL(url))
 			sb.WriteString("\n\n\n")
 		}
