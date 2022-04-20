@@ -43,6 +43,7 @@ func randomOutput(url string) string {
 	var sb strings.Builder
 
 	log.Printf("Creating output %d iterations.", iterations)
+	log.Printf("Service URL to call: '%s' ", url)
 
 	for i := 1; i < iterations; i++ {
 		minSleep := 1
