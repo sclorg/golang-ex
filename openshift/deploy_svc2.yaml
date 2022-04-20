@@ -25,6 +25,9 @@ spec:
     spec:
       containers:
         - name: golang-sample-svc2
+          env:
+            - name: SERVICE3_URL
+              value: 'http://golang-sample-svc3:8080'
           image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-svc2
           resources: {}
           terminationMessagePath: /dev/termination-log

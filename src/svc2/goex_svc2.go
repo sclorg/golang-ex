@@ -33,10 +33,8 @@ func readURL(url string) string {
 	return strBody
 }
 
-func randomOutput() string {
+func randomOutput(url string) string {
 	const maxIterations int = 10
-
-	svc3url := os.Getenv("SERVICE3_URL")
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -54,14 +52,14 @@ func randomOutput() string {
 		time.Sleep(time.Duration(randSleep) * time.Second)
 
 		/// service 3
-		if len(svc3url) == 0 {
+		if len(url) == 0 {
 			log.Println("No service-3 url in env configured")
 			sb.WriteString("No service-3 url in env configured\n")
 		} else {
 			log.Print("Calling service on URL: ")
-			log.Println(svc3url)
+			log.Println(url)
 			sb.WriteString("Result from Service-3:\n")
-			sb.WriteString(readURL(svc3url))
+			sb.WriteString(readURL(url))
 			sb.WriteString("\n\n\n")
 		}
 
@@ -73,9 +71,10 @@ func randomOutput() string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
+	svc3url := os.Getenv("SERVICE3_URL")
 	response := ""
 	if len(response) == 0 {
-		response = randomOutput()
+		response = randomOutput(svc3url)
 	}
 
 	fmt.Fprintln(w, response)
