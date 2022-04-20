@@ -74,6 +74,7 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 	//newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
 	ctx := r.Context()
 	span := trace.SpanFromContext(ctx)
+	defer span.End()
 	// otel instrumentation
 
 	log.Println("Servicing request.")
@@ -119,9 +120,6 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintln(w, response)
 
-	// otel instrumentation
-	span.End()
-	// otel instrumentation
 }
 
 func listenAndServe(port string) {
@@ -138,12 +136,6 @@ func main() {
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
 		port = "8080"
-	}
-	go listenAndServe(port)
-
-	port = os.Getenv("SECOND_PORT")
-	if len(port) == 0 {
-		port = "8888"
 	}
 	go listenAndServe(port)
 
