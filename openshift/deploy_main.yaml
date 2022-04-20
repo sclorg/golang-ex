@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/instance: golang-sample-main
     app.kubernetes.io/name: golang-sample-main
     app.kubernetes.io/part-of: golang-sample
+    sidecar.jaegertracing.io/injected: jaeger
 spec:
   replicas: 1
   selector:
@@ -34,6 +35,16 @@ spec:
               value: 'http://golang-sample-svc1:8080'
             - name: SERVICE2_URL
               value: 'http://golang-sample-svc2:8080'
+            - name: JAEGER_SERVICE_NAME
+              value: golang-sample-main.a-goex
+            - name: JAEGER_PROPAGATION
+              value: 'jaeger,b3,w3c'
+            - name: JAEGER_ENDPOINT
+              value: 'http://jaeger-collector.istio-system.svc:14268/api/traces'
+            - name: JAEGER_AGENT_HOST
+              value: localhost
+            - name: JAEGER_AGENT_PORT
+              value: '6831'
           image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-main
           resources: {}
           terminationMessagePath: /dev/termination-log

@@ -9,18 +9,46 @@ import (
 	"os"
 	"time"
 
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
-	//	"go.opentelemetry.io/otel/attribute"
-	//	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // this is plain dummy example code only
 // not intended to be "good" go code :-)
 
-func readURL(url string) string {
-	client := http.Client{
-		Timeout: 60 * time.Second,
+func initTracer() {
+
+	ctx := context.Background()
+
+	client := otlptracehttp.NewClient()
+
+	otlpTraceExporter, err := otlptrace.New(ctx, client)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(otlpTraceExporter)
+
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithSpanProcessor(batchSpanProcessor),
+		//trace.WithSampler(sdktrace.AlwaysSample()), - please check TracerProvider.WithSampler() implementation for details.
+	)
+
+	otel.SetTracerProvider(tracerProvider)
+	otel.SetTextMapPropagator(
+		propagation.NewCompositeTextMapPropagator(
+			propagation.TraceContext{},
+			propagation.Baggage{},
+		),
+	)
+}
+
+func readURL(client http.Client, url string) string {
 	resp, err := client.Get(url)
 	if err != nil {
 		log.Fatalln(err)
@@ -38,8 +66,14 @@ func readURL(url string) string {
 
 func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 	// otel instrumentation
-	newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
-	log.Println(newCtx)
+	client := http.Client{
+		Timeout:   60 * time.Second,
+		Transport: otelhttp.NewTransport(http.DefaultTransport),
+	}
+
+	//newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
+	ctx := r.Context()
+	span := trace.SpanFromContext(ctx)
 	// otel instrumentation
 
 	log.Println("Servicing request.")
@@ -68,7 +102,7 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print("Calling service on URL: ")
 		log.Println(svc1url)
 		response += "Result from Service-1:\n"
-		response += readURL(svc1url)
+		response += readURL(client, svc1url)
 		response += "\n\n\n"
 	}
 
@@ -80,7 +114,7 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print("Calling service on URL: ")
 		log.Println(svc2url)
 		response += "Result from Service-2:\n"
-		response += readURL(svc2url)
+		response += readURL(client, svc2url)
 	}
 
 	fmt.Fprintln(w, response)
