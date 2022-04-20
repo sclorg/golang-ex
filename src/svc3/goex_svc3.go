@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -15,30 +14,9 @@ import (
 // this is plain dummy example code only
 // not intended to be "good" go code :-)
 
-func readURL(url string) string {
-	client := http.Client{
-		Timeout: 60 * time.Second,
-	}
-	resp, err := client.Get(url)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// read the response body on the line below
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// convert the body to string and log
-	strBody := string(body)
-	log.Println(strBody)
-	return strBody
-}
-
 func randomOutput() string {
 	const outputPart string = "this-is-a-dummy-output-line-which-will-be-concatenated"
 	const maxIterations int = 10
-
-	svc3url := os.Getenv("SERVICE31_URL")
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -50,23 +28,16 @@ func randomOutput() string {
 
 	for i := 1; i < iterations; i++ {
 		minSleep := 1
-		maxSleep := 3
+		maxSleep := 5
 		randSleep := rand.Intn(maxSleep-minSleep+1) + minSleep
 		log.Printf("Iteration %d: Sleeping %d seconds, then adding next string fragment to output\n", i, randSleep)
 		time.Sleep(time.Duration(randSleep) * time.Second)
 
-		/// service 3
-		if len(svc3url) == 0 {
-			log.Println("No service-3 url in env configured")
-			sb.WriteString("No service-3 url in env configured\n")
-		} else {
-			log.Print("Calling service on URL: ")
-			log.Println(svc3url)
-			sb.WriteString("Result from Service-3:\n")
-			sb.WriteString(readURL(svc3url))
-			sb.WriteString("\n\n\n")
-		}
-
+		sb.WriteString("- ")
+		sb.WriteString(strconv.Itoa(i))
+		sb.WriteString(" - ")
+		sb.WriteString(outputPart)
+		sb.WriteString(" | ")
 	}
 
 	result := sb.String()
@@ -75,7 +46,7 @@ func randomOutput() string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	response := ""
+	response := os.Getenv("RESPONSE")
 	if len(response) == 0 {
 		response = randomOutput()
 	}

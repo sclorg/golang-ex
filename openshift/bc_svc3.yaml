@@ -1,0 +1,37 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: golang-sample-svc3
+  labels:
+    app: golang-sample-svc3
+    app.kubernetes.io/component: golang-sample-svc3
+    app.kubernetes.io/instance: golang-sample-svc3
+    app.kubernetes.io/name: golang-sample-svc3
+    app.kubernetes.io/part-of: golang-sample
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'golang-sample-svc3:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 1
+  failedBuildsHistoryLimit: 1
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'golang:1.14.7-ubi8'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/avoigtma/golang-example.git'
+    contextDir: src/svc3
+  triggers:
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+  runPolicy: Serial

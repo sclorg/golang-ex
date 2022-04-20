@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-sample-svc3
+  annotations:
+      image.openshift.io/triggers: >-
+        [{"from":{"kind":"ImageStreamTag","name":"golang-sample-svc3:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"golang-sample-svc3\")].image"}]
+  labels:
+    app: golang-sample-svc3
+    app.kubernetes.io/component: golang-sample-svc3
+    app.kubernetes.io/instance: golang-sample-svc3
+    app.kubernetes.io/name: golang-sample-svc3
+    app.kubernetes.io/part-of: golang-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-sample-svc3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: golang-sample-svc3
+        deploymentconfig: golang-sample-svc3
+    spec:
+      containers:
+        - name: golang-sample-svc3
+          image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-svc3
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

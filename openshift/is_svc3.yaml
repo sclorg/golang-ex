@@ -1,0 +1,13 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: golang-sample-svc3
+    app.kubernetes.io/component: golang-sample-svc3
+    app.kubernetes.io/instance: golang-sample-svc3
+    app.kubernetes.io/name: golang-sample-svc3
+    app.kubernetes.io/part-of: golang-sample
+  name: golang-sample-svc3
+spec:
+  lookupPolicy:
+    local: false

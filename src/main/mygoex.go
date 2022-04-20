@@ -12,7 +12,10 @@ import (
 // not intended to be "good" go code :-)
 
 func readURL(url string) string {
-	resp, err := http.Get(url)
+	client := http.Client{
+		Timeout: 60 * time.Second,
+	}
+	resp, err := client.Get(url)
 	if err != nil {
 		log.Fatalln(err)
 	}
