@@ -34,10 +34,9 @@ func readURL(url string) string {
 }
 
 func randomOutput() string {
-	const outputPart string = "this-is-a-dummy-output-line-which-will-be-concatenated"
 	const maxIterations int = 10
 
-	svc3url := os.Getenv("SERVICE31_URL")
+	svc3url := os.Getenv("SERVICE3_URL")
 
 	rand.Seed(time.Now().UnixNano())
 

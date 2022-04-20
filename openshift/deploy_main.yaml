@@ -25,6 +25,13 @@ spec:
     spec:
       containers:
         - name: golang-sample-main
+          env:
+            - name: RESPONSE
+              value: Red Hat OpenShift
+            - name: SERVICE1_URL
+              value: 'http://golang-sample-svc1:8080'
+            - name: SERVICE2_URL
+              value: 'http://golang-sample-svc2:8080'
           image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-main
           resources: {}
           terminationMessagePath: /dev/termination-log
