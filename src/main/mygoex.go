@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"go.opentelemetry.io/otel"
+	//	"go.opentelemetry.io/otel/attribute"
+	//	"go.opentelemetry.io/otel/trace"
 )
 
 // this is plain dummy example code only
@@ -31,7 +36,12 @@ func readURL(url string) string {
 	return strBody
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
+func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
+	// otel instrumentation
+	newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
+	log.Println(newCtx)
+	// otel instrumentation
+
 	log.Println("Servicing request.")
 
 	responseEnv := os.Getenv("RESPONSE")
@@ -74,6 +84,10 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, response)
+
+	// otel instrumentation
+	span.End()
+	// otel instrumentation
 }
 
 func listenAndServe(port string) {
@@ -85,7 +99,7 @@ func listenAndServe(port string) {
 }
 
 func main() {
-	http.HandleFunc("/", helloHandler)
+	http.HandleFunc("/", MainServiceHandler)
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
 		port = "8080"

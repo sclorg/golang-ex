@@ -18,10 +18,12 @@ spec:
       app: golang-sample-svc2
   template:
     metadata:
-      creationTimestamp: null
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: golang-sample-svc2
         deploymentconfig: golang-sample-svc2
+        version: default
     spec:
       containers:
         - name: golang-sample-svc2
