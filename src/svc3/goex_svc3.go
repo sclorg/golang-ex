@@ -67,11 +67,5 @@ func main() {
 	}
 	go listenAndServe(port)
 
-	port = os.Getenv("SECOND_PORT")
-	if len(port) == 0 {
-		port = "8888"
-	}
-	go listenAndServe(port)
-
 	select {}
 }

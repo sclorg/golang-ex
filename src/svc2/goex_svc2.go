@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // this is plain dummy example code only
@@ -105,12 +105,6 @@ func main() {
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
 		port = "8080"
-	}
-	go listenAndServe(port)
-
-	port = os.Getenv("SECOND_PORT")
-	if len(port) == 0 {
-		port = "8888"
 	}
 	go listenAndServe(port)
 
