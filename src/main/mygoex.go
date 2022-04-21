@@ -14,7 +14,9 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -35,10 +37,20 @@ func initTracer() {
 	}
 
 	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(otlpTraceExporter)
+	// The service.name attribute is required.
+	//
+	//
+	// Your service name will be used as the Service Dataset in honeycomb, which is where data is stored.
+	resource :=
+		resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String("ExampleService"),
+		)
 
 	tracerProvider := sdktrace.NewTracerProvider(
 		sdktrace.WithSpanProcessor(batchSpanProcessor),
 		//trace.WithSampler(sdktrace.AlwaysSample()), - please check TracerProvider.WithSampler() implementation for details.
+		sdktrace.WithResource(resource),
 	)
 
 	otel.SetTracerProvider(tracerProvider)

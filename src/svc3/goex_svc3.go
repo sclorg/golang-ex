@@ -54,7 +54,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	tracer := otel.GetTracerProvider().Tracer("goex/svc3")
 
 	var span trace.Span
-	_, span = tracer.Start(ctx, "svc2")
+	_, span = tracer.Start(ctx, "svc3")
 
 	// span := trace.SpanFromContext(ctx)
 	defer span.End()
