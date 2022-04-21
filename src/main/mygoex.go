@@ -75,13 +75,13 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 
 	//newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
 
-	tracer := tracerProvider.Tracer("goex-main")
+	tracer := otel.GetTracerProvider().Tracer("goex-main")
 	ctx := context.Background()
-	defer func() { _ = tracerProvider.Shutdown(ctx) }()
+	//defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	//ctx := r.Context()
 	var span trace.Span
-	ctx, span = tracer.Start(ctx, "main")
+	_, span = tracer.Start(ctx, "main")
 	//span := trace.SpanFromContext(ctx)
 	defer span.End()
 	// otel instrumentation
