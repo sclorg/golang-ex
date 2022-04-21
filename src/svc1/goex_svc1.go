@@ -5,9 +5,23 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	tracer := otel.GetTracerProvider().Tracer("goex/svc1")
+
+	var span trace.Span
+	_, span = tracer.Start(ctx, "svc1")
+
+	// span := trace.SpanFromContext(ctx)
+	defer span.End()
+	// defer span.End()
+
 	response := os.Getenv("RESPONSE")
 	if len(response) == 0 {
 		response = "Hello OpenShift!"

@@ -9,6 +9,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // this is plain dummy example code only
@@ -46,6 +49,17 @@ func randomOutput() string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	tracer := otel.GetTracerProvider().Tracer("goex/svc3")
+
+	var span trace.Span
+	_, span = tracer.Start(ctx, "svc2")
+
+	// span := trace.SpanFromContext(ctx)
+	defer span.End()
+	// defer span.End()
+
 	response := os.Getenv("RESPONSE")
 	if len(response) == 0 {
 		response = randomOutput()
