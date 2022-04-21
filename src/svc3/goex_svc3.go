@@ -60,10 +60,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 	// defer span.End()
 
-	response := os.Getenv("RESPONSE")
-	if len(response) == 0 {
-		response = randomOutput()
-	}
+	response := randomOutput()
 
 	fmt.Fprintln(w, response)
 	log.Println("Servicing request.")

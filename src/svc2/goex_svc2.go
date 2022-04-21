@@ -63,7 +63,7 @@ func randomOutput(url string) string {
 		} else {
 			log.Print("Calling service on URL: ")
 			log.Println(url)
-			sb.WriteString("Result from Service-3, iteration")
+			sb.WriteString("Result from Service-3, iteration #")
 			sb.WriteString(strconv.Itoa(i))
 			sb.WriteString(":\n")
 			sb.WriteString(readURL(url))

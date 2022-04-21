@@ -28,14 +28,8 @@ spec:
       containers:
         - name: golang-sample-svc3
           env:
-            - name: RESPONSE
-              value: Red Hat OpenShift
-            - name: SERVICE1_URL
-              value: 'http://golang-sample-svc1:8080'
-            - name: SERVICE2_URL
-              value: 'http://golang-sample-svc2:8080'
             - name: JAEGER_SERVICE_NAME
-              value: golang-sample-main.a-goex
+              value: golang-sample-svc3.a-goex
             - name: JAEGER_PROPAGATION
               value: 'jaeger,b3,w3c'
             - name: JAEGER_ENDPOINT
