@@ -41,10 +41,10 @@ spec:
               value: 'jaeger,b3,w3c'
             - name: JAEGER_ENDPOINT
               value: 'http://jaeger-collector.istio-system.svc:14268/api/traces'
-            - name: JAEGER_AGENT_HOST
-              value: localhost
-            - name: JAEGER_AGENT_PORT
-              value: '6831'
+            - name: OTELCOL_SERVER
+              value: 'http://my-otelcol-collector:4317'
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: 'http://my-otelcol-collector:4318'
           image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-main
           resources: {}
           terminationMessagePath: /dev/termination-log

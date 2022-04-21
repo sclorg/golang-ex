@@ -30,6 +30,22 @@ spec:
           env:
             - name: SERVICE3_URL
               value: 'http://golang-sample-svc3:8080'
+            - name: RESPONSE
+              value: Red Hat OpenShift
+            - name: SERVICE1_URL
+              value: 'http://golang-sample-svc1:8080'
+            - name: SERVICE2_URL
+              value: 'http://golang-sample-svc2:8080'
+            - name: JAEGER_SERVICE_NAME
+              value: golang-sample-main.a-goex
+            - name: JAEGER_PROPAGATION
+              value: 'jaeger,b3,w3c'
+            - name: JAEGER_ENDPOINT
+              value: 'http://jaeger-collector.istio-system.svc:14268/api/traces'
+            - name: OTELCOL_SERVER
+              value: 'http://my-otelcol-collector:4317'
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: 'http://my-otelcol-collector:4318'
           image: image-registry.openshift-image-registry.svc:5000/a-goex/golang-sample-svc2
           resources: {}
           terminationMessagePath: /dev/termination-log
