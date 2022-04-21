@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -49,11 +50,11 @@ func randomOutput(url string) string {
 	log.Printf("Service URL to call: '%s' ", url)
 
 	for i := 1; i < iterations; i++ {
-		minSleep := 1
-		maxSleep := 3
+		minSleep := 100
+		maxSleep := 500
 		randSleep := rand.Intn(maxSleep-minSleep+1) + minSleep
 		log.Printf("Iteration %d: Sleeping %d seconds, then adding next string fragment to output\n", i, randSleep)
-		time.Sleep(time.Duration(randSleep) * time.Second)
+		time.Sleep(time.Duration(randSleep) * time.Millisecond)
 
 		/// service 3
 		if len(url) == 0 {
@@ -77,10 +78,16 @@ func randomOutput(url string) string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-
 	ctx := r.Context()
-	span := trace.SpanFromContext(ctx)
+
+	tr := otel.Tracer("goex/svc2")
+
+	var span trace.Span
+	_, span = tr.Start(ctx, "svc2")
 	defer span.End()
+
+	// span := trace.SpanFromContext(ctx)
+	// defer span.End()
 
 	svc3url := os.Getenv("SERVICE3_URL")
 	response := ""

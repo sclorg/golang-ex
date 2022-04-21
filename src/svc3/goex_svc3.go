@@ -16,7 +16,7 @@ import (
 
 func randomOutput() string {
 	const outputPart string = "this-is-a-dummy-output-line-which-will-be-concatenated"
-	const maxIterations int = 10
+	const maxIterations int = 20
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -27,7 +27,11 @@ func randomOutput() string {
 	log.Printf("Creating output %d iterations.", iterations)
 
 	for i := 1; i < iterations; i++ {
-		time.Sleep(time.Second)
+		minSleep := 10
+		maxSleep := 100
+		randSleep := rand.Intn(maxSleep-minSleep+1) + minSleep
+		log.Printf("Iteration %d: Sleeping %d seconds, then adding next string fragment to output\n", i, randSleep)
+		time.Sleep(time.Duration(randSleep) * time.Millisecond)
 
 		sb.WriteString("- ")
 		sb.WriteString(strconv.Itoa(i))

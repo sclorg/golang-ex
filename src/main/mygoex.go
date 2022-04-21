@@ -21,6 +21,8 @@ import (
 // this is plain dummy example code only
 // not intended to be "good" go code :-)
 
+var tracerProvider *sdktrace.TracerProvider
+
 func initTracer() {
 
 	ctx := context.Background()
@@ -72,8 +74,15 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//newCtx, span := otel.Tracer("MainServiceHandler").Start(context.Background(), "MainServiceHandler")
-	ctx := r.Context()
-	span := trace.SpanFromContext(ctx)
+
+	tracer := tracerProvider.Tracer("goex-main")
+	ctx := context.Background()
+	defer func() { _ = tracerProvider.Shutdown(ctx) }()
+
+	//ctx := r.Context()
+	var span trace.Span
+	ctx, span = tracer.Start(ctx, "main")
+	//span := trace.SpanFromContext(ctx)
 	defer span.End()
 	// otel instrumentation
 
