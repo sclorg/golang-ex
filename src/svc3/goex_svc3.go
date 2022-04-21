@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"math/rand"
@@ -11,11 +12,53 @@ import (
 	"time"
 
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
 // this is plain dummy example code only
 // not intended to be "good" go code :-)
+
+var tracerProvider *sdktrace.TracerProvider
+
+func initTracer() {
+
+	ctx := context.Background()
+
+	client := otlptracehttp.NewClient()
+
+	otlpTraceExporter, err := otlptrace.New(ctx, client)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(otlpTraceExporter)
+	// The service.name attribute is required.
+	resource :=
+		resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String("GoServiceExample"),
+		)
+
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithSpanProcessor(batchSpanProcessor),
+		//trace.WithSampler(sdktrace.AlwaysSample()), - please check TracerProvider.WithSampler() implementation for details.
+		sdktrace.WithResource(resource),
+	)
+
+	otel.SetTracerProvider(tracerProvider)
+	otel.SetTextMapPropagator(
+		propagation.NewCompositeTextMapPropagator(
+			propagation.TraceContext{},
+			propagation.Baggage{},
+		),
+	)
+}
 
 func randomOutput() string {
 	const outputPart string = "this-is-a-dummy-output-line-which-will-be-concatenated"

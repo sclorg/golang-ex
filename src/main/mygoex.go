@@ -38,9 +38,6 @@ func initTracer() {
 
 	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(otlpTraceExporter)
 	// The service.name attribute is required.
-	//
-	//
-	// Your service name will be used as the Service Dataset in honeycomb, which is where data is stored.
 	resource :=
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
