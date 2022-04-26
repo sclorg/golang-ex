@@ -43,7 +43,7 @@ func initTracer() {
 	resource :=
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("GoServiceExample"),
+			semconv.ServiceNameKey.String("Service-2"),
 		)
 
 	tracerProvider := sdktrace.NewTracerProvider(

@@ -38,7 +38,7 @@ func initTracer() {
 	resource :=
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("GoServiceExample"),
+			semconv.ServiceNameKey.String("Service-1"),
 		)
 
 	tracerProvider := sdktrace.NewTracerProvider(
@@ -67,7 +67,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(r.Header))
-	// defer span.End()
+	// otel instrumentation
 
 	response := os.Getenv("RESPONSE")
 	if len(response) == 0 {
