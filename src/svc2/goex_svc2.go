@@ -126,11 +126,12 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	tracer := otel.GetTracerProvider().Tracer("goex/svc2")
 
 	var span trace.Span
-	_, span = tracer.Start(ctx, "svc2")
-
+	ctx, span = tracer.Start(ctx, "svc2")
 	// span := trace.SpanFromContext(ctx)
 	defer span.End()
-	// defer span.End()
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(r.Header))
+	// otel instrumentation
 
 	svc3url := os.Getenv("SERVICE3_URL")
 	response := ""

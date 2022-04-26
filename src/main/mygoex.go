@@ -46,6 +46,7 @@ func initTracer() {
 
 	tracerProvider := sdktrace.NewTracerProvider(
 		sdktrace.WithSpanProcessor(batchSpanProcessor),
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 		//trace.WithSampler(sdktrace.AlwaysSample()), - please check TracerProvider.WithSampler() implementation for details.
 		sdktrace.WithResource(resource),
 	)
@@ -90,9 +91,12 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 
 	//ctx := r.Context()
 	var span trace.Span
-	_, span = tracer.Start(ctx, "main")
+	ctx, span = tracer.Start(ctx, "main")
 	//span := trace.SpanFromContext(ctx)
 	defer span.End()
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(r.Header))
+
 	// otel instrumentation
 
 	log.Println("Servicing request.")
