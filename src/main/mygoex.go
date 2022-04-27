@@ -60,20 +60,24 @@ func initTracer() {
 	)
 }
 
-func readURL(client http.Client, url string) string {
-	resp, err := client.Get(url)
+func readURL(client http.Client, ctx context.Context, url string) string {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	// read the response body on the line below
-	body, err := ioutil.ReadAll(resp.Body)
+	res, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	// convert the body to string and log
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 	strBody := string(body)
 	log.Println(strBody)
 	return strBody
+
 }
 
 func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
@@ -125,7 +129,7 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print("Calling service on URL: ")
 		log.Println(svc1url)
 		response += "Result from Service-1:\n"
-		response += readURL(client, svc1url)
+		response += readURL(client, ctx, svc1url)
 		response += "\n\n\n"
 	}
 
@@ -137,7 +141,7 @@ func MainServiceHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print("Calling service on URL: ")
 		log.Println(svc2url)
 		response += "Result from Service-2:\n"
-		response += readURL(client, svc2url)
+		response += readURL(client, ctx, svc2url)
 	}
 
 	fmt.Fprintln(w, response)
