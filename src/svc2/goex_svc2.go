@@ -61,26 +61,27 @@ func initTracer() {
 	)
 }
 
-func readURL(url string) string {
-	client := http.Client{
-		Timeout: 60 * time.Second,
-	}
-	resp, err := client.Get(url)
+func readURL(client http.Client, ctx context.Context, url string) string {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	// read the response body on the line below
-	body, err := ioutil.ReadAll(resp.Body)
+	res, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	// convert the body to string and log
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 	strBody := string(body)
 	log.Println(strBody)
 	return strBody
+
 }
 
-func randomOutput(url string) string {
+func randomOutput(ctx context.Context, url string) string {
 	const maxIterations int = 10
 
 	rand.Seed(time.Now().UnixNano())
@@ -91,6 +92,10 @@ func randomOutput(url string) string {
 
 	log.Printf("Creating output %d iterations.", iterations)
 	log.Printf("Service URL to call: '%s' ", url)
+
+	client := http.Client{
+		Timeout: 60 * time.Second,
+	}
 
 	for i := 1; i < iterations; i++ {
 		minSleep := 100
@@ -109,7 +114,7 @@ func randomOutput(url string) string {
 			sb.WriteString("Result from Service-3, iteration #")
 			sb.WriteString(strconv.Itoa(i))
 			sb.WriteString(":\n")
-			sb.WriteString(readURL(url))
+			sb.WriteString(readURL(client, ctx, url))
 			sb.WriteString("\n\n\n")
 		}
 
@@ -136,7 +141,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	svc3url := os.Getenv("SERVICE3_URL")
 	response := ""
 	if len(response) == 0 {
-		response = randomOutput(svc3url)
+		response = randomOutput(ctx, svc3url)
 	}
 
 	fmt.Fprintln(w, response)
